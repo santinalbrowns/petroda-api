@@ -1,0 +1,19 @@
+import express from "express";
+
+import { services } from "../../controllers/manager/services";
+import { validate } from "../../middlewares";
+import { service } from "../../validations/manager";
+
+const router = express.Router();
+
+router.post('/', validate(service.add), services.add);
+
+router.get('/', services.get);
+
+router.get('/:id', services.get);
+
+router.put('/', validate(service.update), services.update);
+
+router.delete('/:id', services.delete);
+
+module.exports = router;
