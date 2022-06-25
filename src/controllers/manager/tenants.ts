@@ -15,7 +15,7 @@ export const tenants = {
 
                 if (!tenant) throw Errors.notFound('Tenant not found.');
 
-                response.status(200).json({
+                return response.status(200).json({
                     id: tenant._id,
                     firstname: tenant.firstname,
                     lastname: tenant.lastname,
@@ -45,7 +45,7 @@ export const tenants = {
             })
 
 
-            response.status(200).json(body);
+            return response.status(200).json(body);
 
 
         } catch (error) {
