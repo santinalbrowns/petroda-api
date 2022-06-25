@@ -3,7 +3,7 @@ import { ROLE } from "../../enum";
 import { Errors } from "../../helpers";
 import User from "../../models/User";
 
-const tenants = {
+export const tenants = {
     get: async (request: Request, response: Response, next: NextFunction) => {
 
         try {
@@ -54,6 +54,4 @@ const tenants = {
 
     }
 }
-
-export default tenants;
 
