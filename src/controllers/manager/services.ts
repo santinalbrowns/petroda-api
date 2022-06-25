@@ -76,7 +76,7 @@ export const services = {
 
 
         } catch (error) {
-            next();
+            next(error);
         }
     },
 
