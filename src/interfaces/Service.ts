@@ -3,8 +3,6 @@ import { User } from "./User";
 
 export interface Service {
     [x: string]: any;
-    price: number;
+    name: string;
     category: Category['_id'];
-    hours: number;
-    user: User['_id'];
 }
