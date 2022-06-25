@@ -27,6 +27,7 @@ export async function register(request: Request, response: Response, next: NextF
             firstname: user.firstname,
             lastname: user.lastname,
             email: user.email,
+            role: user.role,
             created_at: user.createdAt,
             updated_at: user.updatedAt,
         }
@@ -66,6 +67,7 @@ export async function login(request: Request, response: Response, next: NextFunc
             firstname: user.firstname,
             lastname: user.lastname,
             email: user.email,
+            role: user.role,
             token: token,
             created_at: user.createdAt,
             updated_at: user.updatedAt,

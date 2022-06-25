@@ -8,38 +8,22 @@ import User from "../../models/User";
 export const services = {
     add: async (request: Request, response: Response, next: NextFunction) => {
         try {
-
-            const { price, hours } = request.body;
-
             const category = await Category.findById(request.body.category);
 
             if (!category) throw Errors.notFound('Category not found.');
 
-            const user = await User.findById(request.body.user);
-
-            if (!user) throw Errors.notFound('Service provider not found.');
-
             const service = await Service.create({
-                price: price,
+                name: request.body.name,
                 category: category._id,
-                hours: hours,
-                user: user._id
             });
 
             const body = {
                 id: service._id,
-                price: service.price,
-                hours: service.hours,
+                name: service.name,
                 category: {
                     id: category._id,
                     name: category.name,
                     description: category.description
-                },
-                provider: {
-                    id: user._id,
-                    firstname: user.firstname,
-                    lastname: user.lastname,
-                    email: user.email
                 }
             }
 
