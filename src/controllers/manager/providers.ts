@@ -1,35 +1,46 @@
 import { NextFunction, Request, Response } from "express";
 import { ROLE } from "../../enum";
 import { Errors } from "../../helpers";
+import Provider from "../../models/Provider";
+import Service from "../../models/Service";
 import User from "../../models/User";
 
 export const providers = {
     add: async (request: Request, response: Response, next: NextFunction) => {
         try {
 
-            const { firstname, lastname, email, password } = request.body;
+            const user = await User.findOne({ _id: request.body.user, role: ROLE.PROVIDER });
 
-            const result = await User.findOne({ email: email, role: ROLE.PROVIDER });
+            if (!user) throw Errors.notFound('User not found');
 
-            if (result) throw Errors.conflict(`Service provider with email (${email}) already exists.`);
+            const service = await Service.findById(request.body.service).populate('category');
 
-            const user = new User({
-                firstname: firstname,
-                lastname: lastname,
-                email: email,
-                password: password,
-                role: ROLE.PROVIDER
+            if (!service) throw Errors.notFound('Service not found');
+
+            const provider = new Provider({
+                user: user._id,
+                service: service._id,
+                price: request.body.price
             });
 
-            await user.save();
+            await provider.save();
 
             const body = {
-                id: user._id,
-                firstname: user.firstname,
-                lastname: user.lastname,
-                email: user.email,
-                created_at: user.createdAt,
-                updated_at: user.updatedAt,
+                id: provider._id,
+                price: provider.price,
+                user: {
+                    id: user._id,
+                    firstname: user.firstname,
+                    lastname: user.lastname,
+                    email: user.email,
+                    role: user.role,
+                    created_at: user.createdAt,
+                    updated_at: user.updatedAt,
+                },
+                service: {
+                    id: service._id,
+                    name: service.name
+                }
             }
 
             response.status(201).json(body);
@@ -41,39 +52,55 @@ export const providers = {
 
     get: async (request: Request, response: Response, next: NextFunction) => {
         try {
+            if (request.params.id) {
 
-            const { id } = request.params;
+                const provider = await Provider.findById(request.params.id).populate('user').populate('service');
 
-            if (id) {
-                const user = await User.findOne({ _id: id, role: ROLE.PROVIDER });
-
-                if (!user) throw Errors.notFound('Service provider not found.');
+                if (!provider) throw Errors.notFound('Service provider not found.');
 
                 const body = {
-                    id: user._id,
-                    firstname: user.firstname,
-                    lastname: user.lastname,
-                    email: user.email,
-                    created_at: user.createdAt,
-                    updated_at: user.updatedAt,
+                    id: provider._id,
+                    price: provider.price,
+                    user: {
+                        id: provider.user._id,
+                        firstname: provider.user.firstname,
+                        lastname: provider.user.lastname,
+                        email: provider.user.email,
+                        role: provider.user.role,
+                        created_at: provider.user.createdAt,
+                        updated_at: provider.user.updatedAt,
+                    },
+                    service: {
+                        id: provider.service._id,
+                        name: provider.service.name,
+                    }
                 }
 
                 return response.status(201).json(body);
 
             }
 
-            const users = await User.find({ role: ROLE.PROVIDER });
+            const providers = await Provider.find().populate('user').populate('service');
 
-            if (!users) throw Errors.notFound('Service providers not found.');
+            if (!providers) throw Errors.notFound('Service providers not found.');
 
-            const body = users.map((user) => {
+            const body = providers.map((provider) => {
                 return {
-                    id: user._id,
-                    firstname: user.firstname,
-                    lastname: user.lastname,
-                    email: user.email,
-                    created_at: user.createdAt,
-                    updated_at: user.updatedAt,
+                    id: provider._id,
+                    price: provider.price,
+                    user: {
+                        id: provider.user._id,
+                        firstname: provider.user.firstname,
+                        lastname: provider.user.lastname,
+                        email: provider.user.email,
+                        role: provider.user.role,
+                        created_at: provider.user.createdAt,
+                        updated_at: provider.user.updatedAt,
+                    },
+                    service: {
+                        id: provider.service._id,
+                        name: provider.service.name,
+                    }
                 }
             });
 
@@ -86,30 +113,42 @@ export const providers = {
 
     update: async (request: Request, response: Response, next: NextFunction) => {
         try {
+            const provider = await Provider.findById(request.body.id);
 
-            const { id, firstname, lastname, email, password } = request.body;
+            if (!provider) throw Errors.notFound('Service provider not found.');
 
-            const user = await User.findById(id);
+            if (request.body.user) provider.user = request.body.user;
 
-            if(!user) throw Errors.notFound('Service provider not found.');
+            if (request.body.service) provider.service = request.body.service;
 
-            if(firstname) user.firstname = firstname;
+            if (request.body.price) provider.price = request.body.price;
 
-            if(lastname) user.lastname = lastname;
+            const user = await User.findOne({ _id: provider.user, role: ROLE.PROVIDER });
 
-            if(email) user.email = email;
+            if (!user) throw Errors.notFound('User not found');
 
-            if(password) user.password = password;
+            const service = await Service.findById(provider.service).populate('category');
 
-            await user.save();
+            if (!service) throw Errors.notFound('Service not found');
+
+            await provider.save();
 
             const body = {
-                id: user._id,
-                firstname: user.firstname,
-                lastname: user.lastname,
-                email: user.email,
-                created_at: user.createdAt,
-                updated_at: user.updatedAt,
+                id: provider._id,
+                price: provider.price,
+                user: {
+                    id: user._id,
+                    firstname: user.firstname,
+                    lastname: user.lastname,
+                    email: user.email,
+                    role: user.role,
+                    created_at: user.createdAt,
+                    updated_at: user.updatedAt,
+                },
+                service: {
+                    id: service._id,
+                    name: service.name
+                }
             }
 
             return response.status(200).json(body);
@@ -121,14 +160,11 @@ export const providers = {
 
     delete: async (request: Request, response: Response, next: NextFunction) => {
         try {
+            const provider = await Provider.findById(request.params.id);
 
-            const { id } = request.params;
+            if (!provider) throw Errors.notFound('Service provider not found.');
 
-            const user = await User.findById(id);
-
-            if(!user) throw Errors.notFound('Service provider not found.');
-
-            await user.remove();
+            await provider.remove();
 
             response.status(204).send();
 
