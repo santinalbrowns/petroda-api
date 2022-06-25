@@ -14,6 +14,6 @@ router.get('/:id', categories.get);
 
 router.put('/', validate(category.update), categories.update);
 
-router.delete('/:id', categories.update);
+router.delete('/:id', categories.delete);
 
 module.exports = router;

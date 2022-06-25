@@ -6,18 +6,15 @@ export const categories = {
     add: async (request: Request, response: Response, next: NextFunction) => {
 
         try {
-            const { name, description } = request.body;
+            const result = await Category.findOne({ name: request.body.name });
 
-            const result = await Category.findOne({ name: name });
+            if (result) throw Errors.conflict(`Category name (${request.body.name}) already exists.`);
 
-            if (result) throw Errors.conflict(`Category name (${name}) already exists.`);
-
-            const category = await Category.create({ name: name, description: description });
+            const category = await Category.create({ name: request.body.name });
 
             return response.status(201).json({
                 id: category._id,
                 name: category.name,
-                description: category.description
             })
 
         } catch (error) {
@@ -28,18 +25,14 @@ export const categories = {
 
     get: async (request: Request, response: Response, next: NextFunction) => {
         try {
-
-            const { id } = request.params;
-
-            if (id) {
-                const category = await Category.findById(id);
+            if (request.params.id) {
+                const category = await Category.findById(request.params.id);
 
                 if (!category) throw Errors.notFound('Category not found.');
 
                 return response.status(200).json({
                     id: category._id,
                     name: category.name,
-                    description: category.description
                 });
             }
 
@@ -51,7 +44,6 @@ export const categories = {
                 return {
                     id: category._id,
                     name: category.name,
-                    description: category.description
                 }
             });
 
@@ -64,22 +56,17 @@ export const categories = {
 
     update: async (request: Request, response: Response, next: NextFunction) => {
         try {
-            const { id, name, description } = request.body;
-
-            const category = await Category.findById(id);
+            const category = await Category.findById(request.body.id);
 
             if (!category) throw Errors.notFound('Category not found');
 
-            if (name) category.name = name;
-
-            if (description) category.description = description;
+            if (request.body.name) category.name = request.body.name;
 
             await category.save();
 
             return response.status(200).json({
                 id: category._id,
                 name: category.name,
-                description: category.description
             });
 
         } catch (error) {
@@ -89,12 +76,9 @@ export const categories = {
 
     delete: async (request: Request, response: Response, next: NextFunction) => {
         try {
+            const category = await Category.findById(request.params.id);
 
-            const { id } = request.params;
-
-            const category = await Category.findById(id);
-
-            if(!category) throw Errors.notFound('Category not found.');
+            if (!category) throw Errors.notFound('Category not found.');
 
             await category.remove();
 

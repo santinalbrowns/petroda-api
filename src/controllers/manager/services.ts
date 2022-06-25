@@ -39,50 +39,35 @@ export const services = {
 
             if (request.params.id) {
 
-                const service = await Service.findById(request.params.id).populate('category').populate('user');
+                const service = await Service.findById(request.params.id).populate('category');
 
                 if (!service) throw Errors.notFound('Service not found.');
 
                 const body = {
                     id: service._id,
-                    price: service.price,
-                    hours: service.hours,
+                    name: service.name,
                     category: {
                         id: service.category._id,
                         name: service.category.name,
                         description: service.category.description
-                    },
-                    provider: {
-                        id: service.user._id,
-                        firstname: service.user.firstname,
-                        lastname: service.user.lastname,
-                        email: service.user.email
                     }
                 }
 
                 return response.status(200).json(body);
             }
 
-
-            const services = await Service.find().populate('category').populate('user');
+            const services = await Service.find().populate('category');
 
             if (!services) throw Errors.notFound('Services not found.');
 
             const body = services.map(service => {
                 return {
                     id: service._id,
-                    price: service.price,
-                    hours: service.hours,
+                    name: service.name,
                     category: {
                         id: service.category._id,
                         name: service.category.name,
                         description: service.category.description
-                    },
-                    provider: {
-                        id: service.user._id,
-                        firstname: service.user.firstname,
-                        lastname: service.user.lastname,
-                        email: service.user.email
                     }
                 }
             });
@@ -99,55 +84,32 @@ export const services = {
 
         try {
 
-            const { id, name, price, hours, category: categoryId, user: userId } = request.body;
-
-            const service = await Service.findById(id).populate('category').populate('user');
+            const service = await Service.findById(request.body.id).populate('category');
 
             if (!service) throw Errors.notFound("Service not found.");
 
+            if (request.body.name) service.name = request.body.name;
 
+            if (request.body.category) {
 
-            if (name) service.name = name;
-
-            if (price) service.price = price;
-
-            if (hours) service.hours = hours;
-
-            if (categoryId) {
-
-                const category = await Category.findById(categoryId);
+                const category = await Category.findById(request.body.category);
 
                 if (!category) throw Errors.notFound("Category not found.");
 
-                service.category = categoryId;
+                service.category = request.body.category;
             }
-
-            if (userId) {
-
-                const user = await User.findById(userId);
-
-                if (!user) throw Errors.notFound("Service provider not found.");
-
-                service.user = userId
-            };
 
             await service.save();
 
             const body = {
                 id: service._id,
-                price: service.price,
-                hours: service.hours,
+                name: service.name,
                 category: {
                     id: service.category._id,
                     name: service.category.name,
                     description: service.category.description
                 },
-                provider: {
-                    id: service.user._id,
-                    firstname: service.user.firstname,
-                    lastname: service.user.lastname,
-                    email: service.user.email
-                }
+
             }
 
             return response.status(200).json(body);
