@@ -4,6 +4,7 @@ import { providers } from "./providers";
 import { tenants } from "./tenants";
 import { services } from "./services";
 import { users } from "./users";
+import { houses } from "./houses";
 
 export {
     overview,
@@ -12,4 +13,5 @@ export {
     tenants,
     services,
     users,
+    houses,
 }

@@ -26,5 +26,6 @@ router.use('/tenants', require('./tenants'));
 // Users end-point
 router.use('/users', require('./users'));
 
+router.use('/houses', require('./houses'));
 
 module.exports = router;
