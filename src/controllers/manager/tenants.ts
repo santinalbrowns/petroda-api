@@ -10,7 +10,6 @@ export const tenants = {
 
             if (request.params.id) {
 
-
                 const tenant = await User.findOne({ _id: request.params.id, role: ROLE.TENANT });
 
                 if (!tenant) throw Errors.notFound('Tenant not found.');
