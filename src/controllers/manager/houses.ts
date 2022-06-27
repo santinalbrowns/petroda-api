@@ -78,7 +78,7 @@ export const houses = {
 
             const houses = await House.find().populate('tenant');
 
-            if(!houses) throw Errors.notFound("Houses not found");
+            if(!houses.length) throw Errors.notFound("Houses not found");
 
             const body = houses.map((house) => {
                 return {
@@ -114,7 +114,7 @@ export const houses = {
 
             if(request.body.number) house.number = request.body.number;
 
-            if(request.body.address) house.number = request.body.address;
+            if(request.body.address) house.address = request.body.address;
 
             if(request.body.city) house.city = request.body.city;
 

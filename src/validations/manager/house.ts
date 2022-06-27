@@ -2,7 +2,7 @@ import { number, object, string } from "yup";
 
 const house = {
     add: object({
-        tenant: string().notRequired(),
+        tenant: string().required(),
         country: string().required().min(2),
         city: string().required().min(3),
         address: string().required().min(3),

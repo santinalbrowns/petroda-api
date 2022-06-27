@@ -45,7 +45,7 @@ export async function login(request: Request, response: Response, next: NextFunc
 
         const { email, password } = request.body;
 
-        const user = await User.findOne({email: email});
+        const user = await User.findOne({email: email.toLowerCase()});
 
         if(!user) throw Errors.badRequest('Invalid credentials');
 

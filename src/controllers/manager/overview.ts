@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { ROLE } from "../../enum";
 import Category from "../../models/Category";
+import House from "../../models/House";
 import Provider from "../../models/Provider";
 import Service from "../../models/Service";
 import User from "../../models/User";
@@ -16,6 +17,8 @@ export async function overview(request: Request, response: Response, next: NextF
         const tenants = await User.find({ role: ROLE.TENANT });
 
         const services = await Service.find().populate('category');
+
+        const houses = await House.find().populate('tenant');
 
         const body = {
             categories: categories.map((category) => {
@@ -62,6 +65,23 @@ export async function overview(request: Request, response: Response, next: NextF
                     email: tenant.email,
                     created_at: tenant.createdAt,
                     updated_at: tenant.updatedAt,
+                }
+            }),
+            houses: houses.map((house) => {
+                return {
+                    id: house._id,
+                    number: house.number,
+                    address: house.address,
+                    city: house.city,
+                    country: house.country,
+                    tenant: {
+                        id: house.tenant._id,
+                        firstname: house.tenant.firstname,
+                        lastname: house.tenant.lastname,
+                        email: house.tenant.email,
+                        created_at: house.tenant.createdAt,
+                        updated_at: house.tenant.updatedAt,
+                    }
                 }
             })
         }
