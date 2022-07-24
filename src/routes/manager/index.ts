@@ -11,9 +11,6 @@ router.use(guard(ROLE.MANAGER));
 // Overview endpoint
 router.get('/', overview);
 
-// Categories end-point
-router.use('/categories', require('./categories'));
-
 // Service providers end-point
 router.use('/providers', require('./providers'));
 
