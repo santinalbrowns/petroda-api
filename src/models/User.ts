@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import * as bcrypt from 'bcrypt';
 import { User } from "../interfaces";
+import { ROLE } from "../enum";
 
 const schema = new mongoose.Schema(
     {
@@ -8,7 +9,7 @@ const schema = new mongoose.Schema(
         lastname: { type: String, required: true },
         email: { type: String, required: true, lowercase: true },
         password: { type: String, required: true },
-        role: { type: String, required: true }
+        role: { type: String, required: true, enum: [ROLE.MANAGER, ROLE.PROVIDER, ROLE.TENANT] }
     },
     { timestamps: true }
 );
