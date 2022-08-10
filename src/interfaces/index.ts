@@ -1,13 +1,13 @@
 import { User } from "./User"
-import { Category } from "./Category"
 import { Service } from "./Service"
 import { Provider } from "./Prodiver"
 import { House } from "./House"
+import { Tenant } from "./Tenant"
 
 export {
     User,
-    Category,
     Service,
     Provider,
     House,
+    Tenant,
 }

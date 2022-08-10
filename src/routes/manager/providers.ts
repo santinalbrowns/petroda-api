@@ -12,7 +12,7 @@ router.get('/', providers.get);
 
 router.get('/:id', providers.get);
 
-router.put('/', validate(provider.update), providers.update);
+router.put('/:id', validate(provider.update), providers.update);
 
 router.delete('/:id', providers.delete);
 

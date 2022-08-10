@@ -10,7 +10,6 @@ const provider = {
         price: number().notRequired().min(0),
         service: string().notRequired(),
         user: string().notRequired(),
-        id: string().required()
     })
 }
 

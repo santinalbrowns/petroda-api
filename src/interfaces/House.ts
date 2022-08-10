@@ -6,5 +6,4 @@ export interface House {
     address: string;
     city: string;
     country: string;
-    tenant: User['_id'];
 }

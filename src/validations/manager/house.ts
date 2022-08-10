@@ -13,8 +13,7 @@ const house = {
         country: string().notRequired().min(2),
         city: string().notRequired().min(3),
         address: string().notRequired().min(3),
-        number: number().min(0).notRequired(),
-        id: string().required()
+        number: number().min(0).notRequired()
     })
 }
 

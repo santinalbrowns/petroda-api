@@ -15,7 +15,6 @@ const user = {
         email: string().email().notRequired(),
         lastname: string().notRequired().min(3).max(45),
         firstname: string().notRequired().min(3).max(45),
-        id: string().required()
     })
 }
 

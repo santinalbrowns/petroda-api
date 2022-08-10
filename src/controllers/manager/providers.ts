@@ -13,7 +13,7 @@ export const providers = {
 
             if (!user) throw Errors.notFound('User not found');
 
-            const service = await Service.findById(request.body.service).populate('category');
+            const service = await Service.findById(request.body.service);
 
             if (!service) throw Errors.notFound('Service not found');
 
@@ -113,7 +113,7 @@ export const providers = {
 
     update: async (request: Request, response: Response, next: NextFunction) => {
         try {
-            const provider = await Provider.findById(request.body.id);
+            const provider = await Provider.findById(request.params.id);
 
             if (!provider) throw Errors.notFound('Service provider not found.');
 
@@ -127,7 +127,7 @@ export const providers = {
 
             if (!user) throw Errors.notFound('User not found');
 
-            const service = await Service.findById(provider.service).populate('category');
+            const service = await Service.findById(provider.service);
 
             if (!service) throw Errors.notFound('Service not found');
 

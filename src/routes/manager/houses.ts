@@ -12,7 +12,7 @@ router.get('/', houses.get);
 
 router.get('/:id', houses.get);
 
-router.put('/', validate(house.update), houses.update);
+router.put('/:id', validate(house.update), houses.update);
 
 router.delete('/:id', houses.delete);
 

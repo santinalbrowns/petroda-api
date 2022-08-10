@@ -12,7 +12,7 @@ router.get('/', users.get);
 
 router.get('/:id', users.get);
 
-router.put('/', validate(user.update), users.update);
+router.put('/:id', validate(user.update), users.update);
 
 router.delete('/:id', users.delete);
 

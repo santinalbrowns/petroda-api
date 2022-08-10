@@ -84,7 +84,7 @@ export const users = {
     update: async (request: Request, response: Response, next: NextFunction) => {
         try {
 
-            const user = await User.findById(request.body.id);
+            const user = await User.findById(request.params.id);
 
             if (!user) throw Errors.notFound("User not found");
 

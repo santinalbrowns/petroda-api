@@ -52,7 +52,7 @@ export const houses = {
 
             if(request.params.id) {
 
-                const house = await House.findById(request.params.id).populate('tenant');
+                const house = await House.findById(request.params.id);
 
                 if(!house) throw Errors.notFound("House not found");
 
@@ -61,22 +61,14 @@ export const houses = {
                     number: house.number,
                     address: house.address,
                     city: house.city,
-                    country: house.country,
-                    tenant: {
-                        id: house.tenant._id,
-                        firstname: house.tenant.firstname,
-                        lastname: house.tenant.lastname,
-                        email: house.tenant.email,
-                        created_at: house.tenant.createdAt,
-                        updated_at: house.tenant.updatedAt,
-                    }
+                    country: house.country
                 };
 
                 return response.status(200).json(body);
 
             }
 
-            const houses = await House.find().populate('tenant');
+            const houses = await House.find();
 
             if(!houses.length) throw Errors.notFound("Houses not found");
 
@@ -86,15 +78,7 @@ export const houses = {
                     number: house.number,
                     address: house.address,
                     city: house.city,
-                    country: house.country,
-                    tenant: {
-                        id: house.tenant._id,
-                        firstname: house.tenant.firstname,
-                        lastname: house.tenant.lastname,
-                        email: house.tenant.email,
-                        created_at: house.tenant.createdAt,
-                        updated_at: house.tenant.updatedAt,
-                    }
+                    country: house.country
                 }
             });
 
@@ -108,7 +92,7 @@ export const houses = {
     update: async (request: Request, response: Response, next: NextFunction) => {
         try {
 
-            const house = await House.findById(request.body.id).populate('tenant');
+            const house = await House.findById(request.params.id);
 
             if(!house) throw Errors.notFound("House not found");
 
@@ -120,8 +104,6 @@ export const houses = {
 
             if(request.body.country) house.country = request.body.country;
 
-            if(request.body.tenant) house.tenant = request.body.tenant;
-
             await house.save();
 
             const body = {
@@ -129,15 +111,7 @@ export const houses = {
                 number: house.number,
                 address: house.address,
                 city: house.city,
-                country: house.country,
-                tenant: {
-                    id: house.tenant._id,
-                    firstname: house.tenant.firstname,
-                    lastname: house.tenant.lastname,
-                    email: house.tenant.email,
-                    created_at: house.tenant.createdAt,
-                    updated_at: house.tenant.updatedAt,
-                }
+                country: house.country
             };
 
             return response.status(200).json(body);

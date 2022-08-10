@@ -60,7 +60,7 @@ export const services = {
 
         try {
 
-            const service = await Service.findById(request.body.id);
+            const service = await Service.findById(request.params.id);
 
             if (!service) throw Errors.notFound("Service not found.");
 
