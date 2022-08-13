@@ -12,7 +12,7 @@ export async function overview(request: Request, response: Response, next: NextF
 
         const tenants = await User.find({ role: ROLE.TENANT });
 
-        const services = await Service.find().populate('category');
+        const services = await Service.find();
 
         const houses = await House.find().populate('tenant');
 
