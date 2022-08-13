@@ -9,28 +9,22 @@ export const tenants = {
     add: async (request: Request, response: Response, next: NextFunction) => {
         try {
 
-            const house = await House.findOne({ number: request.body.house });
+            const house = await House.findById(request.body.house);
 
             if (!house) {
                 throw Errors.notFound("House not found.");
             }
 
-            const user = await User.findOne({ email: request.body.email, role: ROLE.TENANT });
+            const user = await User.findOne({ _id: request.body.user, role: ROLE.TENANT });
 
             if (!user) {
                 throw Errors.notFound("Tenant not found.");
             }
 
-            const result = await Tenant.findOne({ user: user._id });
+            const result = await Tenant.findOne({ user: user._id, house: house._id });
 
             if (result) {
                 throw Errors.conflict("Tenant already has a house");
-            }
-
-            const houseResult = await Tenant.findOne({ house: house._id });
-
-            if (houseResult) {
-                throw Errors.conflict("House already has a tenant");
             }
 
             const tenant = await Tenant.create({
@@ -67,50 +61,137 @@ export const tenants = {
     get: async (request: Request, response: Response, next: NextFunction) => {
 
         try {
-
             if (request.params.id) {
 
-                const tenant = await User.findOne({ _id: request.params.id, role: ROLE.TENANT });
+                const tenant = await Tenant.findById(request.params.id).populate('user').populate('house');
 
                 if (!tenant) throw Errors.notFound('Tenant not found.');
 
-                return response.status(200).json({
+                const body = {
                     id: tenant._id,
-                    firstname: tenant.firstname,
-                    lastname: tenant.lastname,
-                    email: tenant.email,
-                    created_at: tenant.createdAt,
-                    updated_at: tenant.updatedAt
-                });
+                    house: {
+                        id: tenant.house._id,
+                        number: tenant.house.number,
+                        address: tenant.house.address,
+                        city: tenant.house.city,
+                        country: tenant.house.country,
+                    },
+                    tenant: {
+                        id: tenant.user._id,
+                        firstname: tenant.user.firstname,
+                        lastname: tenant.user.lastname,
+                        email: tenant.user.email,
+                        created_at: tenant.user.createdAt,
+                        updated_at: tenant.user.updatedAt
+                    },
+                }
+
+                return response.status(200).json(body);
 
             }
 
-            const tenants = await User.find({ role: ROLE.TENANT });
-
+            const tenants = await Tenant.find().populate('user').populate('house');
 
             if (!tenants) throw Errors.notFound('Tenants not found.');
 
-
-            const body = tenants.map((tenant) => {
-
+            const body = tenants.map((tenant: any) => {
                 return {
                     id: tenant._id,
-                    firstname: tenant.firstname,
-                    lastname: tenant.lastname,
-                    email: tenant.email,
-                    created_at: tenant.createdAt,
-                    updated_at: tenant.updatedAt
+                    house: {
+                        id: tenant.house._id,
+                        number: tenant.house.number,
+                        address: tenant.house.address,
+                        city: tenant.house.city,
+                        country: tenant.house.country,
+                    },
+                    tenant: {
+                        id: tenant.user._id,
+                        firstname: tenant.user.firstname,
+                        lastname: tenant.user.lastname,
+                        email: tenant.user.email,
+                        created_at: tenant.user.createdAt,
+                        updated_at: tenant.user.updatedAt
+                    },
                 }
-            })
-
+            });
 
             return response.status(200).json(body);
-
 
         } catch (error) {
             next(error);
         }
 
+    },
+
+    update: async (request: Request, response: Response, next: NextFunction) => {
+        try {
+
+            const tenant = await Tenant.findById(request.params.id).populate('user').populate('house');
+
+            if (!tenant) throw Errors.notFound('Tenant not found.');
+
+
+
+            if (request.body.user) {
+                const user = await User.findOne({ _id: request.body.user, role: ROLE.TENANT });
+
+                if (!user) {
+                    throw Errors.notFound("Tenant not found.");
+                }
+
+                tenant.user = request.body.user;
+            };
+
+            if (request.body.house) {
+                const house = await House.findById(request.body.house);
+
+                if (!house) {
+                    throw Errors.notFound("House not found.");
+                }
+                tenant.house = request.body.house;
+            }
+
+            await tenant.save();
+
+            const body = {
+                id: tenant._id,
+                house: {
+                    id: tenant.house._id,
+                    number: tenant.house.number,
+                    address: tenant.house.address,
+                    city: tenant.house.city,
+                    country: tenant.house.country,
+                },
+                tenant: {
+                    id: tenant.user._id,
+                    firstname: tenant.user.firstname,
+                    lastname: tenant.user.lastname,
+                    email: tenant.user.email,
+                    created_at: tenant.user.createdAt,
+                    updated_at: tenant.user.updatedAt
+                },
+            }
+
+            response.status(201).json(body);
+
+        } catch (error) {
+            next(error);
+        }
+    },
+
+    delete: async (request: Request, response: Response, next: NextFunction) => {
+        try {
+            const tenant = await Tenant.findById(request.params.id);
+
+            if (!tenant) throw Errors.notFound("Tenant not found.");
+
+            await tenant.remove();
+
+            return response.status(204).send();
+
+        } catch (error) {
+            next(error);
+        }
     }
 }
 
