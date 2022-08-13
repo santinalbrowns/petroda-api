@@ -14,7 +14,7 @@ export async function overview(request: Request, response: Response, next: NextF
 
         const services = await Service.find();
 
-        const houses = await House.find().populate('tenant');
+        const houses = await House.find();
 
         const body = {
             services: services.map((service) => {
