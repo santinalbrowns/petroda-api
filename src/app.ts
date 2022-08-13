@@ -17,6 +17,9 @@ app.use('/auth', require('./routes/auth'));
 // Manager route
 app.use('/manager', require('./routes/manager'));
 
+// Tenant route
+app.use('/api', require('./routes/tenant'));
+
 app.use(error);
 
 app.listen(process.env.PORT || 3000, () => { 
