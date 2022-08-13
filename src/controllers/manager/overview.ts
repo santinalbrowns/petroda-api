@@ -21,11 +21,6 @@ export async function overview(request: Request, response: Response, next: NextF
                 return {
                     id: service._id,
                     name: service.name,
-                    category: {
-                        id: service.category._id,
-                        name: service.category.name,
-                        description: service.category.description
-                    }
                 }
             }),
             providers: providers.map((provider) => {
