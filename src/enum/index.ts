@@ -1,5 +1,7 @@
 import { ROLE } from "./ROLE"
+import { STATUS } from "./STATUS"
 
 export {
-    ROLE
+    ROLE,
+    STATUS
 }

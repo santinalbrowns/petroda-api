@@ -14,6 +14,9 @@ router.use('/providers', require('./providers'));
 // Services end-point
 router.use('/services', require('./services'));
 
+// Bookings end-point
+router.use('/bookings', require('./booking'));
+
 //router.use('/houses', require('./houses'));
 
 module.exports = router;
