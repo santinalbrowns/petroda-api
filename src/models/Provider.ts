@@ -16,7 +16,8 @@ const schema = new mongoose.Schema({
         type: Number,
         required: true,
         min: 0
-    }
+    },
+    description: {type: String, default: ''},
 });
 
 const Provider = mongoose.model<Provider>('Provider', schema);

@@ -6,4 +6,5 @@ export interface Provider {
     user: User['_id'];
     service: Service['_id'];
     price: number;
+    description: string;
 }

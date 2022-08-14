@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { Errors } from "../../helpers";
+import Booking from "../../models/Booking";
 import Provider from "../../models/Provider";
 
 import Service from "../../models/Service";
@@ -115,7 +116,10 @@ export const services = {
 
             if (!providers) throw Errors.notFound('Service providers not found.');
 
-            const body = providers.map((provider) => {
+            const body = await Promise.all(providers.map(async (provider) => {
+
+                const bookings = await Booking.find({ provider: provider._id });
+
                 return {
                     id: provider._id,
                     price: provider.price,
@@ -131,9 +135,17 @@ export const services = {
                     service: {
                         id: provider.service._id,
                         name: provider.service.name,
-                    }
+                    },
+                    bookings: bookings.map((booking) => {
+                        return {
+                            id: booking._id,
+                            date: booking.date,
+                            total: booking.total,
+                            status: booking.status,
+                        }
+                    }),
                 }
-            });
+            }));
 
             return response.status(200).json(body);
 

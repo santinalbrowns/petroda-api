@@ -20,7 +20,8 @@ export const providers = {
             const provider = new Provider({
                 user: user._id,
                 service: service._id,
-                price: request.body.price
+                price: request.body.price,
+                description: request.body.description,
             });
 
             await provider.save();
@@ -28,6 +29,7 @@ export const providers = {
             const body = {
                 id: provider._id,
                 price: provider.price,
+                description: provider.description,
                 user: {
                     id: user._id,
                     firstname: user.firstname,
@@ -61,6 +63,7 @@ export const providers = {
                 const body = {
                     id: provider._id,
                     price: provider.price,
+                    description: provider.description,
                     user: {
                         id: provider.user._id,
                         firstname: provider.user.firstname,
@@ -88,6 +91,7 @@ export const providers = {
                 return {
                     id: provider._id,
                     price: provider.price,
+                    description: provider.description,
                     user: {
                         id: provider.user._id,
                         firstname: provider.user.firstname,
@@ -123,6 +127,8 @@ export const providers = {
 
             if (request.body.price) provider.price = request.body.price;
 
+            if(request.body.description) provider.description = request.body.description;
+
             const user = await User.findOne({ _id: provider.user, role: ROLE.PROVIDER });
 
             if (!user) throw Errors.notFound('User not found');
@@ -136,6 +142,7 @@ export const providers = {
             const body = {
                 id: provider._id,
                 price: provider.price,
+                description: provider.description,
                 user: {
                     id: user._id,
                     firstname: user.firstname,
