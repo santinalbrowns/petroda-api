@@ -30,9 +30,30 @@ export const services = {
 
                 if (!service) throw Errors.notFound('Service not found.');
 
+                const providers = await Provider.find({ service: service._id }).populate('user').populate('service');
+
                 const body = {
                     id: service._id,
-                    name: service.name
+                    name: service.name,
+                    providers: providers.map((provider) => {
+                        return {
+                            id: provider._id,
+                            price: provider.price,
+                            user: {
+                                id: provider.user._id,
+                                firstname: provider.user.firstname,
+                                lastname: provider.user.lastname,
+                                email: provider.user.email,
+                                role: provider.user.role,
+                                created_at: provider.user.createdAt,
+                                updated_at: provider.user.updatedAt,
+                            },
+                            service: {
+                                id: provider.service._id,
+                                name: provider.service.name,
+                            }
+                        }
+                    }),
                 }
 
                 return response.status(200).json(body);
@@ -42,12 +63,36 @@ export const services = {
 
             if (!services) throw Errors.notFound('Services not found.');
 
-            const body = services.map(service => {
+
+
+            const body = await Promise.all(services.map(async (service) => {
+
+                const providers = await Provider.find({ service: service._id }).populate('user').populate('service');
+
                 return {
                     id: service._id,
-                    name: service.name
+                    name: service.name,
+                    providers: providers.map((provider) => {
+                        return {
+                            id: provider._id,
+                            price: provider.price,
+                            user: {
+                                id: provider.user._id,
+                                firstname: provider.user.firstname,
+                                lastname: provider.user.lastname,
+                                email: provider.user.email,
+                                role: provider.user.role,
+                                created_at: provider.user.createdAt,
+                                updated_at: provider.user.updatedAt,
+                            },
+                            service: {
+                                id: provider.service._id,
+                                name: provider.service.name,
+                            }
+                        }
+                    }),
                 }
-            });
+            }));
 
             return response.status(200).json(body);
 
@@ -62,7 +107,7 @@ export const services = {
 
             const service = await Service.findById(request.params.id);
 
-            if(!service) {
+            if (!service) {
                 throw Errors.notFound('Service not found');
             }
 
