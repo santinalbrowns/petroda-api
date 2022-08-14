@@ -76,7 +76,7 @@ export const providers = {
                     }
                 }
 
-                return response.status(201).json(body);
+                return response.status(200).json(body);
 
             }
 
@@ -104,7 +104,7 @@ export const providers = {
                 }
             });
 
-            return response.status(201).json(body);
+            return response.status(200).json(body);
 
         } catch (error) {
             next(error);
