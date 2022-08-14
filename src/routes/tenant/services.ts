@@ -7,4 +7,6 @@ router.get('/', services.get);
 
 router.get('/:id', services.get);
 
+router.get('/:id/providers', services.providers);
+
 module.exports = router;
