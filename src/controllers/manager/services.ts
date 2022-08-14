@@ -1,12 +1,13 @@
 import { NextFunction, Request, Response } from "express";
 import { Errors } from "../../helpers";
+import Provider from "../../models/Provider";
 
 import Service from "../../models/Service";
 
 export const services = {
     add: async (request: Request, response: Response, next: NextFunction) => {
         try {
-            const service = await Service.create({name: request.body.name});
+            const service = await Service.create({ name: request.body.name });
 
             const body = {
                 id: service._id,
@@ -50,6 +51,40 @@ export const services = {
 
             return response.status(200).json(body);
 
+
+        } catch (error) {
+            next(error);
+        }
+    },
+
+    providers: async (request: Request, response: Response, next: NextFunction) => {
+        try {
+
+            const providers = await Provider.find({ service: request.params.id }).populate('user').populate('service');
+
+            if (!providers) throw Errors.notFound('Service providers not found.');
+
+            const body = providers.map((provider) => {
+                return {
+                    id: provider._id,
+                    price: provider.price,
+                    user: {
+                        id: provider.user._id,
+                        firstname: provider.user.firstname,
+                        lastname: provider.user.lastname,
+                        email: provider.user.email,
+                        role: provider.user.role,
+                        created_at: provider.user.createdAt,
+                        updated_at: provider.user.updatedAt,
+                    },
+                    service: {
+                        id: provider.service._id,
+                        name: provider.service.name,
+                    }
+                }
+            });
+
+            return response.status(201).json(body);
 
         } catch (error) {
             next(error);

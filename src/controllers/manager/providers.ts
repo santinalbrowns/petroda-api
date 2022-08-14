@@ -49,7 +49,7 @@ export const providers = {
             next(error);
         }
     },
- 
+
     get: async (request: Request, response: Response, next: NextFunction) => {
         try {
             if (request.params.id) {
