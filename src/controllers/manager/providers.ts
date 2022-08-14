@@ -17,6 +17,12 @@ export const providers = {
 
             if (!service) throw Errors.notFound('Service not found');
 
+            const result = await Provider.findOne({user: user._id, service: service._id});
+
+            if(result) {
+                throw Errors.conflict('Provider already exists.');
+            }
+
             const provider = new Provider({
                 user: user._id,
                 service: service._id,
