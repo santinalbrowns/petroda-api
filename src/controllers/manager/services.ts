@@ -60,7 +60,13 @@ export const services = {
     providers: async (request: Request, response: Response, next: NextFunction) => {
         try {
 
-            const providers = await Provider.find({ service: request.params.id }).populate('user').populate('service');
+            const service = await Service.findById(request.params.id);
+
+            if(!service) {
+                throw Errors.notFound('Service not found');
+            }
+
+            const providers = await Provider.find({ service: service._id }).populate('user').populate('service');
 
             if (!providers) throw Errors.notFound('Service providers not found.');
 
@@ -84,7 +90,7 @@ export const services = {
                 }
             });
 
-            return response.status(201).json(body);
+            return response.status(200).json(body);
 
         } catch (error) {
             next(error);
