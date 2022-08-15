@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import { STATUS } from "../../enum";
 import { Errors } from "../../helpers";
 import Booking from "../../models/Booking";
 import Provider from "../../models/Provider";
@@ -118,7 +119,7 @@ export const services = {
 
             const body = await Promise.all(providers.map(async (provider) => {
 
-                const bookings = await Booking.find({ provider: provider._id });
+                const bookings = await Booking.find({ provider: provider._id, status: STATUS.COMPLETED });
 
                 return {
                     id: provider._id,
