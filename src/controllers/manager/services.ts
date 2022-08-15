@@ -190,9 +190,7 @@ export const services = {
 
             await service.remove();
 
-            return response.status(200).json({
-                message: "Service deleted."
-            });
+            return response.status(204).send();
 
         } catch (error) {
             next(error);
