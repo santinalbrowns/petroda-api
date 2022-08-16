@@ -11,17 +11,12 @@ export const houses = {
             const result = await House.findOne({number: request.body.number});
 
             if(result) throw Errors.conflict("House number already exists");
-
-            const tenant = await User.findOne({_id: request.body.tenant, role: ROLE.TENANT});
-
-            if(!tenant) throw Errors.notFound('Tenant not found');
             
             const house = await House.create({
                 number:request.body.number,
                 address: request.body.address,
                 city: request.body.city,
-                country: request.body.country,
-                tenant: tenant._id
+                country: request.body.country
             });
 
             const body = {
@@ -29,15 +24,7 @@ export const houses = {
                 number: house.number,
                 address: house.address,
                 city: house.city,
-                country: house.country,
-                tenant: {
-                    id: tenant._id,
-                    firstname: tenant.firstname,
-                    lastname: tenant.lastname,
-                    email: tenant.email,
-                    created_at: tenant.createdAt,
-                    updated_at: tenant.updatedAt,
-                }
+                country: house.country
             };
 
             return response.status(201).json(body);
@@ -96,7 +83,16 @@ export const houses = {
 
             if(!house) throw Errors.notFound("House not found");
 
-            if(request.body.number) house.number = request.body.number;
+            if(request.body.number && request.body.number.toString() != house.number.toString()) {
+
+                const check = await House.findOne({number: request.body.number});
+
+                if(check) {
+                    throw Errors.conflict("House number already exists");
+                }
+
+                house.number = request.body.number;
+            };
 
             if(request.body.address) house.address = request.body.address;
 
