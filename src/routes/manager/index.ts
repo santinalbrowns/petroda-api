@@ -23,6 +23,10 @@ router.use('/tenants', require('./tenants'));
 // Users end-point
 router.use('/users', require('./users'));
 
+// Houses end-point
 router.use('/houses', require('./houses'));
+
+// Bookins end-point
+router.use('/bookings', require('./booking'));
 
 module.exports = router;
