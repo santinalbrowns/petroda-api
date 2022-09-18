@@ -130,3 +130,5 @@ dist
 # MacOS Finder .DS_Store and .localized
 .DS_Store
 .localized
+.DS_Store
+.DS_Store
