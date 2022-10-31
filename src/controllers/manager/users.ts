@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import { ROLE } from "../../enum";
 import { Errors } from "../../helpers";
 import User from "../../models/User";
 
@@ -57,7 +58,21 @@ export const users = {
                 return response.status(201).json(body);
             }
 
-            const users = await User.find();
+            let role = null;
+
+            if(request.query.role && request.query.role == ROLE.TENANT) {
+                role = ROLE.TENANT;
+            }
+
+            if(request.query.role && request.query.role == ROLE.MANAGER) {
+                role = ROLE.MANAGER;
+            }
+
+            if(request.query.role && request.query.role == ROLE.PROVIDER) {
+                role = ROLE.PROVIDER;
+            }
+
+            const users = role ? await User.find({role: role}) : await User.find();
 
             if (!users) throw Errors.notFound("Users not found");
 
