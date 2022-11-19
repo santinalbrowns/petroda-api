@@ -20,6 +20,9 @@ app.use('/manager', require('./routes/manager'));
 // Tenant route
 app.use('/api', require('./routes/tenant'));
 
+// Provider route
+app.use('/provider', require('./routes/provider'));
+
 app.use(error);
 
 app.listen(process.env.PORT || 3000, () => { 

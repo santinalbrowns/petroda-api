@@ -6,9 +6,9 @@ const schema = new mongoose.Schema(
     {
         date: {type: Date, required: true},
         total: {type: Number, required: true},
-        status: {type: String, enum: [STATUS.PENDING, STATUS.INCOMPLETE, STATUS.COMPLETED]},
-        provider: {type: mongoose.Schema.Types.ObjectId, ref: 'provider', required: true},
-        tenant: {type: mongoose.Schema.Types.ObjectId, ref: 'tenant', required: true},
+        status: {type: String, enum: [STATUS.PENDING, STATUS.INCOMPLETE, STATUS.COMPLETED, STATUS.APPROVED, STATUS.DECLINED]},
+        provider: {type: mongoose.Schema.Types.ObjectId, ref: 'Provider', required: true},
+        tenant: {type: mongoose.Schema.Types.ObjectId, ref: 'Tenant', required: true},
     },
     {timestamps: true}
 );
