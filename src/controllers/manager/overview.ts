@@ -17,6 +17,10 @@ export async function overview(request: Request, response: Response, next: NextF
         const houses = await House.find();
 
         const body = {
+            chart: {
+                values: [0, 0, 0, 0, 0, 0],
+                months: ["Jan", "Feb", "Mar", "Apri", "May", "Jun"]
+            },
             services: services.map((service) => {
                 return {
                     id: service._id,
@@ -58,14 +62,6 @@ export async function overview(request: Request, response: Response, next: NextF
                     address: house.address,
                     city: house.city,
                     country: house.country,
-                    tenant: {
-                        id: house.tenant._id,
-                        firstname: house.tenant.firstname,
-                        lastname: house.tenant.lastname,
-                        email: house.tenant.email,
-                        created_at: house.tenant.createdAt,
-                        updated_at: house.tenant.updatedAt,
-                    }
                 }
             })
         }
