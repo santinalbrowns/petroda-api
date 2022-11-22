@@ -5,17 +5,14 @@ import { guard } from "../../middlewares";
 
 const router = express.Router();
 
-
-router.use(guard(ROLE.TENANT));
-
 // Service providers end-point
-router.use('/providers', require('./providers'));
+router.use('/providers', guard(ROLE.TENANT), require('./providers'));
 
 // Services end-point
-router.use('/services', require('./services'));
+router.use('/services', guard(ROLE.TENANT), require('./services'));
 
 // Bookings end-point
-router.use('/bookings', require('./booking'));
+router.use('/bookings', guard(ROLE.TENANT), require('./booking'));
 
 //router.use('/houses', require('./houses'));
 
