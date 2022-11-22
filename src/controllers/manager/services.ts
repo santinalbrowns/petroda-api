@@ -41,6 +41,7 @@ export const services = {
                         return {
                             id: provider._id,
                             price: provider.price,
+                            description: provider.description,
                             user: {
                                 id: provider.user._id,
                                 firstname: provider.user.firstname,
@@ -78,6 +79,7 @@ export const services = {
                         return {
                             id: provider._id,
                             price: provider.price,
+                            description: provider.description,
                             user: {
                                 id: provider.user._id,
                                 firstname: provider.user.firstname,
@@ -124,6 +126,7 @@ export const services = {
                 return {
                     id: provider._id,
                     price: provider.price,
+                    description: provider.description,
                     user: {
                         id: provider.user._id,
                         firstname: provider.user.firstname,

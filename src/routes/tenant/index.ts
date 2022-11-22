@@ -19,4 +19,7 @@ router.use('/bookings', require('./booking'));
 
 //router.use('/houses', require('./houses'));
 
+//Making payments
+router.use('/pay', require('./payment'));
+
 module.exports = router;
