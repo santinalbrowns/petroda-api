@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import Stripe from "stripe";
+import { STATUS } from "../../enum";
 import { Errors } from "../../helpers";
 import Booking from "../../models/Booking";
 import Payment from "../../models/Payment";
@@ -64,6 +65,14 @@ export async function verify(request: Request, response: Response, next: NextFun
                 ref: charge.id,
                 booking: charge.metadata.id,
             });
+
+            const booking = await Booking.findById(charge.metadata.id);
+
+            if(booking) {
+                booking.status = STATUS.COMPLETED;
+
+                await booking.save();
+            }
 
         } else {
             console.warn(`🤷‍♀️ Unhandled event type: ${event.type}`);
