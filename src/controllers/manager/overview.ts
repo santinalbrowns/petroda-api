@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { ROLE } from "../../enum";
+import Booking from "../../models/Booking";
 import House from "../../models/House";
 import Provider from "../../models/Provider";
 import Service from "../../models/Service";
@@ -16,10 +17,45 @@ export async function overview(request: Request, response: Response, next: NextF
 
         const houses = await House.find();
 
+        const data = await Booking.aggregate([
+            {
+                $group: {
+                    _id: { month: { $month: "$createdAt" } },
+                    total: { $sum: { $toInt: "$total" } }
+                }
+            },
+            { $sort: { _id: 1 } },
+            {
+                $project: {
+                    total: "$total",
+                    month: {
+                        $arrayElemAt: [
+                            [
+                                "",
+                                "Jan",
+                                "Feb",
+                                "Mar",
+                                "Apr",
+                                "May",
+                                "Jun",
+                                "Jul",
+                                "Aug",
+                                "Sep",
+                                "Oct",
+                                "Nov",
+                                "Dec",
+                            ],
+                            "$_id.month",
+                        ],
+                    },
+                },
+            },
+        ]);
+
         const body = {
             chart: {
-                values: [0, 0, 0, 0, 0, 0],
-                months: ["Jan", "Feb", "Mar", "Apri", "May", "Jun"]
+                values: [0, ...data.map(record => record.total)],
+                months: ["", ...data.map(record => record.month)],
             },
             services: services.map((service) => {
                 return {
