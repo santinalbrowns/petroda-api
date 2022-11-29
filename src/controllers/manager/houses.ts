@@ -57,8 +57,6 @@ export const houses = {
 
             const houses = await House.find();
 
-            if(!houses.length) throw Errors.notFound("Houses not found");
-
             const body = houses.map((house) => {
                 return {
                     id: house._id,
