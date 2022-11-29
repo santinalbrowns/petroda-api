@@ -10,15 +10,13 @@ export async function addReview(request: Request, response: Response, next: Next
 
         const { rate, comment } = request.body;
 
-        const user = response.locals.user;
-
-        const tenant = await Tenant.findOne({ user: user.id });
+        const tenant = await Tenant.findOne({ user: response.locals.user.id });
 
         if (!tenant) throw Errors.notFound("Tenant not found");
 
         const provider = await Provider.findById(request.params.id);
 
-        if (!provider) throw Errors.notFound("Tenant not found");
+        if (!provider) throw Errors.notFound("Provider not found");
 
         const review = await Review.create({
             rate: rate,
