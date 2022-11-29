@@ -19,4 +19,5 @@ router.use('/bookings', guard(ROLE.TENANT), require('./booking'));
 //Making payments
 router.use('/pay', require('./payment'));
 
+
 module.exports = router;

@@ -3,8 +3,10 @@ import { STATUS } from "../../enum";
 import { Errors } from "../../helpers";
 import Booking from "../../models/Booking";
 import Provider from "../../models/Provider";
+import Review from "../../models/Review";
 
 import Service from "../../models/Service";
+import Tenant from "../../models/Tenant";
 
 export const services = {
     add: async (request: Request, response: Response, next: NextFunction) => {
@@ -123,6 +125,25 @@ export const services = {
 
                 const bookings = await Booking.find({ provider: provider._id, status: STATUS.COMPLETED });
 
+                const reviews = await Review.find({ provider: provider.id }).populate('tenant');
+
+                const data = await Promise.all(reviews.map(async (review) => {
+
+                    const tenant = await Tenant.findById(review.tenant._id).populate("user");
+
+                    return {
+                        id: review._id,
+                        rate: review.rate,
+                        comment: review.comment,
+                        user: {
+                            firstname: tenant?.user.firstname,
+                            lastname: tenant?.user.lastname,
+                        },
+                        date: review.createdAt,
+                    }
+
+                }));
+
                 return {
                     id: provider._id,
                     price: provider.price,
@@ -148,6 +169,10 @@ export const services = {
                             status: booking.status,
                         }
                     }),
+                    reviews: {
+                        total: 4.5,
+                        data: data,
+                    },
                 }
             }));
 
