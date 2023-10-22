@@ -72,7 +72,7 @@ export async function login(request: Request, response: Response, next: NextFunc
             created_at: user.createdAt,
             updated_at: user.updatedAt,
         }
-
+        
         response.status(200).json(body);
 
     } catch (error) {

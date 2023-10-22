@@ -3,19 +3,19 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const privateKey: any = process.env.PRIVATE_KEY;
-const publicKey: any = process.env.PUBLIC_KEY;
+const SECRET_KEY: any = process.env.SECRET_KEY;
 
 export function sign(object: Object, options?: jwt.SignOptions | undefined) {
-    return jwt.sign(object, privateKey, {
-        ...(options && options),
-        algorithm: 'RS256'
-    });
+    try {
+        return jwt.sign(object, SECRET_KEY);
+    } catch (error) {
+        console.log("RSA Key failed");
+    }
 }
 
 export function verify(token: string) {
     try {
-        const payload = jwt.verify(token, publicKey);
+        const payload = jwt.verify(token, SECRET_KEY);
 
         return {
             valid: true,
@@ -23,6 +23,7 @@ export function verify(token: string) {
             payload
         }
     } catch (e: any) {
+        
         return {
             valid: false,
             expired: e.message === 'jwt expired',
